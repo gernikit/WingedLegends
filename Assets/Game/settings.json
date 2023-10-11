@@ -1,0 +1,12 @@
+{
+  "missionCount": 0,
+  "missionData": {
+    "ID": 0,
+    "State": 0,
+    "Coordinates": {
+      "X": 1.0,
+      "Y": 2.0
+    },
+    "Dependencies": null
+  }
+}
