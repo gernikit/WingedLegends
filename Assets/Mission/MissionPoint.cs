@@ -9,12 +9,13 @@ namespace Missions
         [SerializeField] private SpriteRenderer _spriteRenderer;
         
         private MapMediator _mapMediator;
-        private SingleMission _mission;
+        private Mission _mission;
 
-        public void InitMissionPoint(MapMediator mapMediator, SingleMission mission)
+        public void InitMissionPoint(MapMediator mapMediator, Mission mission)
         {
             _mapMediator = mapMediator;
-            transform.position = new Vector2(mission.MissionData.Coordinates.X,mission.MissionData.Coordinates.Y) ;
+            _mission = mission;
+            transform.position = new Vector2(mission.MissionData.Coordinates.X,mission.MissionData.Coordinates.Y);
 
             if (mission.MissionData.State == MissionState.Activated)
                 _spriteRenderer.enabled = true;

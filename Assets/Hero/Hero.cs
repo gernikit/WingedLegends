@@ -1,6 +1,6 @@
 namespace Heroes
 {
-    public enum HeroName
+    public enum HeroType
     {
         Hawk,
         Seagull,
@@ -10,12 +10,12 @@ namespace Heroes
     
     public class Hero
     {
-        private HeroName _name;
+        private HeroType _type;
         private int _points;
         
-        public Hero(HeroName name, int points)
+        public Hero(HeroType type, int points)
         {
-            _name = name;
+            _type = type;
             _points = points;
         }
     }

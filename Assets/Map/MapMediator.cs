@@ -7,6 +7,6 @@ namespace Map
     {
         [SerializeField] private Prehistory _prehistory;
 
-        public void ShowPrehistory(SingleMission mission) => _prehistory.ShowPrehistory(mission);
+        public void ShowPrehistory(Mission mission) => _prehistory.ShowPrehistory(mission);
     }
 }

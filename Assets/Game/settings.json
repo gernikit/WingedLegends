@@ -1,12 +1,47 @@
 {
-  "missionCount": 0,
-  "missionData": {
-    "ID": 0,
-    "State": 0,
-    "Coordinates": {
-      "X": 1.0,
-      "Y": 2.0
-    },
-    "Dependencies": null
-  }
+  "missionCount": 1,
+  "availableHeroes": [
+    "Hawk"
+  ],
+  "missionCollection": [
+    {
+      "MissionData": {
+        "ID": 0,
+        "State": "Activated",
+        "Coordinates": {
+          "X": 1.0,
+          "Y": 2.0
+        },
+        "DependenciesIds": [
+          1,
+          2
+        ]
+      },
+      "MissionCompletedData": {
+        "UnlockedHeroes": [
+          "Hawk"
+        ],
+        "TempBlockedMissionIds": [
+          1,
+          2
+        ],
+        "HeroPoints": {
+          "Hawk": 1
+        }
+      },
+      "MissionHistoryData": {
+        "Name": "Переполох в гнезде",
+        "PrehistoryText": "В последние годы в птичьем мире творится что-то странное. Птенцы пропадают из гнезда, перелётные птицы улетают и не возвращается. После исчезновения целого клана грачей Птичий Совет решил всё-таки разобраться с исчезновениями. Совет отправляет Ястреба (стартовый персонаж) в лес расспросить птиц о деталях.",
+        "HistoryText": "History",
+        "PlayerSide": "PlayerSide",
+        "EnemySide": "EnemySide"
+      }
+    }
+  ],
+  "doubleMissionsData": [
+    {
+      "FirstMissionId": 1,
+      "SecondMissionId": 2
+    }
+  ]
 }

@@ -11,26 +11,6 @@ namespace Missions {
         TemporarilyBlocked,
         Completed
     }
-
-    [Serializable]
-    public class MissionCompletedData
-    {
-
-        private List<Hero> _unlockedHeroes;
-        private List<MissionData> _temporarilyBlocked;
-        private Dictionary<HeroName, int> _heroPoints;
-
-        public MissionCompletedData(List<Hero> unlockedHeroes, List<MissionData> temporarilyBlocked, Dictionary<HeroName, int> heroPoints)
-        {
-            _unlockedHeroes = unlockedHeroes;
-            _temporarilyBlocked = temporarilyBlocked;
-            _heroPoints = heroPoints;
-        }
-        
-        public List<Hero> UnlockedHeroes => _unlockedHeroes;
-        public List<MissionData> TemporarilyBlocked => _temporarilyBlocked;
-        public Dictionary<HeroName, int> HeroPoints => _heroPoints;
-    }
     
     [Serializable]
     public class MissionData
@@ -38,51 +18,99 @@ namespace Missions {
         private uint _id;
         private MissionState _state;
         private Vector2 _coordinates;
-        private List<MissionData> _dependencies;
+        private List<uint> _dependenciesIds;
         
-        public MissionData(uint id, MissionState state, Vector2 coordinates, List<MissionData> dependencies)
+        public MissionData(uint id, MissionState state, Vector2 coordinates, List<uint> dependenciesIds)
         {
             _id = id;
             _state = state;
             _coordinates = coordinates;
-            _dependencies = dependencies;
+            _dependenciesIds = dependenciesIds;
         }
         
         public uint ID => _id;
         public MissionState State => _state;
         public Vector2 Coordinates => _coordinates;
-        public List<MissionData> Dependencies => _dependencies;
+        public List<uint> DependenciesIds => _dependenciesIds;
     }
     
-    public abstract class Mission {}
+    [Serializable]
+    public class MissionCompletedData
+    {
+        private List<HeroType> _unlockedHeroes;
+        private List<uint> _tempBlockedMissionIds;
+        private Dictionary<HeroType, int> _heroPoints;
 
-    public class SingleMission : Mission
+        public MissionCompletedData(List<HeroType> unlockedHeroes, List<uint> tempBlockedMissionIds, Dictionary<HeroType, int> heroPoints)
+        {
+            _unlockedHeroes = unlockedHeroes;
+            _tempBlockedMissionIds = tempBlockedMissionIds;
+            _heroPoints = heroPoints;
+        }
+        
+        public List<HeroType> UnlockedHeroes => _unlockedHeroes;
+        public List<uint> TempBlockedMissionIds => _tempBlockedMissionIds;
+        public Dictionary<HeroType, int> HeroPoints => _heroPoints;
+    }
+
+    [Serializable]
+    public class MissionHistoryData
+    {
+        private string _name;
+        private string _prehistoryText;
+        private string _historyText;
+        private string _playerSide;
+        private string _enemySide;
+        
+        public MissionHistoryData(string name, string prehistoryText, string historyText, string playerSide, string enemySide)
+        {
+            _name = name;
+            _prehistoryText = prehistoryText;
+            _historyText = historyText;
+            _playerSide = playerSide;
+            _enemySide = enemySide;
+        }
+        
+        public string Name => _name;
+        public string PrehistoryText => _prehistoryText;
+        public string HistoryText => _historyText;
+        public string PlayerSide => _playerSide;
+        public string EnemySide => _enemySide;
+    }
+
+    [Serializable]
+    public class DoubleMissionData
+    {
+        private uint _firstMissionId;
+        private uint _secondMissionId;
+        
+        public DoubleMissionData(uint firstMissionId, uint secondMissionId)
+        {
+            _firstMissionId = firstMissionId;
+            _secondMissionId = secondMissionId;
+        }
+
+        public uint FirstMissionId => _firstMissionId;
+        public uint SecondMissionId => _secondMissionId;
+    }
+    
+
+    [Serializable]
+    public class Mission
     {
         private MissionData _missionData;
         private MissionCompletedData _completedData;
+        private MissionHistoryData _missionHistoryData;
 
-        public SingleMission(MissionData missionData, MissionCompletedData completedData)
+        public Mission(MissionData missionData, MissionCompletedData completedData, MissionHistoryData missionHistoryData)
         {
             _missionData = missionData;
             _completedData = completedData;
+            _missionHistoryData = missionHistoryData;
         }
 
         public MissionData MissionData => _missionData;
         public MissionCompletedData MissionCompletedData => _completedData;
-    }
-
-    public class DoubleMission : Mission
-    {
-        private SingleMission _first;
-        private SingleMission _second;
-
-        public DoubleMission(SingleMission first, SingleMission second)
-        {
-            _first = first;
-            _second = second;
-        }
-
-        public SingleMission First => _first;
-        public SingleMission Second => _second;
+        public MissionHistoryData MissionHistoryData => _missionHistoryData;
     }
 }
