@@ -19,7 +19,7 @@ namespace Game
         private void Start()
         {
             int missionsCount = 12;
-            MissionData missionData = new MissionData(0, MissionState.Activated, new System.Numerics.Vector2(1,2), new List<uint>() {1,2});
+            MissionData missionData = new MissionData(0, "1", MissionState.Activated, new System.Numerics.Vector2(1,2), new () {1,2});
             MissionCompletedData missionCompletedData =
                 new MissionCompletedData(
                     new () { HeroType.Hawk },

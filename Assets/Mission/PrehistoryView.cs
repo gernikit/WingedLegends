@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Missions
 {
-    public class Prehistory : MonoBehaviour
+    public class PrehistoryView : MonoBehaviour
     {
         [SerializeField] private GameObject _prehistoryWindow;
         [SerializeField] private TMP_Text _missionNameLeft;

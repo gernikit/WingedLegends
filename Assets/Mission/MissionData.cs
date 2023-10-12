@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Xml.Schema;
 using Heroes;
 
 namespace Missions {
@@ -16,19 +17,22 @@ namespace Missions {
     public class MissionData
     {
         private uint _id;
+        private string _number;
         private MissionState _state;
         private Vector2 _coordinates;
         private List<uint> _dependenciesIds;
         
-        public MissionData(uint id, MissionState state, Vector2 coordinates, List<uint> dependenciesIds)
+        public MissionData(uint id, string number, MissionState state, Vector2 coordinates, List<uint> dependenciesIds)
         {
             _id = id;
+            _number = number;
             _state = state;
             _coordinates = coordinates;
             _dependenciesIds = dependenciesIds;
         }
         
         public uint ID => _id;
+        public string Number => _number;
         public MissionState State => _state;
         public Vector2 Coordinates => _coordinates;
         public List<uint> DependenciesIds => _dependenciesIds;
