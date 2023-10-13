@@ -1,29 +1,80 @@
+using Game;
 using Map;
+using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Missions
 {
-    public class MissionPoint : MonoBehaviour, IPointerClickHandler
+    public class MissionPoint : MonoBehaviour
     {
-        [SerializeField] private SpriteRenderer _spriteRenderer;
+        [SerializeField] private TMP_Text _missionNumber;
+        [SerializeField] private Button _missionButton;
+        [SerializeField] private Image _completionMark;
+        [SerializeField] private Image _lockMark;
         
-        private MapMediator _mapMediator;
+        [SerializeField] private MapPresenter _mapPresenter;
+        [SerializeField] private GameObject _background;
+        
         private Mission _mission;
 
-        public void InitMissionPoint(MapMediator mapMediator, Mission mission)
+        private void OnEnable()
         {
-            _mapMediator = mapMediator;
-            _mission = mission;
-            transform.position = new Vector2(mission.MissionData.Coordinates.X,mission.MissionData.Coordinates.Y);
-
-            if (mission.MissionData.State == MissionState.Activated)
-                _spriteRenderer.enabled = true;
+            _missionButton.onClick.AddListener(OnMissionSelect);
         }
 
-        public void OnPointerClick(PointerEventData eventData)
+        private void OnDisable()
         {
-            _mapMediator.ShowPrehistory(_mission);
+            _missionButton.onClick.RemoveListener(OnMissionSelect);
+        }
+
+        public void OnMissionSelect()
+        {
+            _mapPresenter.OnMissionSelected(_mission);
+        }
+
+        public void OnChangedState(MissionState state)
+        {
+            if (state == MissionState.Activated)
+            {
+                _background.SetActive(true);
+                _completionMark.enabled = false;
+                _lockMark.enabled = false;
+                _missionButton.enabled = true;
+            }
+            else if (state == MissionState.TemporarilyBlocked)
+            {
+                _background.SetActive(true);
+                _completionMark.enabled = false;
+                _lockMark.enabled = true;
+                _missionButton.enabled = false;
+            }
+            else if (state == MissionState.Blocked)
+            {
+                _background.SetActive(false);
+                _completionMark.enabled = false;
+                _lockMark.enabled = false;
+                _missionButton.enabled = false;
+            }
+            else if (state == MissionState.Completed)
+            {
+                _background.SetActive(true);
+                _completionMark.enabled = true;
+                _lockMark.enabled = false;
+                _missionButton.enabled = false;
+            }
+        }
+
+        public Mission Mission => _mission;
+
+        public void InitMissionPoint(MapPresenter mapPresenter, Mission mission, PlayerData playerData)
+        {
+            _mapPresenter = mapPresenter;
+            _mission = mission;
+            _missionNumber.text = mission.MissionData.Number;
+            transform.position = new Vector2(mission.MissionData.Coordinates.X, mission.MissionData.Coordinates.Y);
+
+            OnChangedState(mission.MissionData.State);
         }
     }
 }

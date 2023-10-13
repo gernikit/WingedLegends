@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Heroes;
 using UnityEngine;
 using Map;
@@ -9,25 +8,36 @@ namespace Game
     public class GameRoot : MonoBehaviour
     {
         [SerializeField] private MapMediator _mapMediator;
-        [SerializeField] private List<MissionPoint> _missionPoints;
+        [SerializeField] private MapPresenter _mapPresenter;
 
-        private GameSettings _settings = new GameSettings();
+        private GameSettings _settings;
+        private PlayerData _playerData;
 
         private SettingsSaver _settingsSaver = new SettingsSaver();
         private SettingsLoader _settingsLoader = new SettingsLoader();
         
         private void Start()
         {
-            int missionsCount = 12;
-            MissionData missionData = new MissionData(0, "1", MissionState.Activated, new System.Numerics.Vector2(1,2), new () {1,2});
-            MissionCompletedData missionCompletedData =
-                new MissionCompletedData(
-                    new () { HeroType.Hawk },
-                    new (){1, 2},
+            MissionData missionData = new MissionData(0, "1", MissionState.Activated,
+                new System.Numerics.Vector2(0,-4),
+                new () {},
+                new (){4, 5});
+            MissionData missionData2 = new MissionData(1, "2", MissionState.Blocked,
+                new System.Numerics.Vector2(0,-3),
+                new () {0},
+                new (){});
+            MissionData missionData3 = new MissionData(2, "3", MissionState.Blocked,
+                new System.Numerics.Vector2(0,-2),
+                new () {0, 1},
+                new (){});
+            MissionCompletionData missionCompletionData =
+                new MissionCompletionData(
+                    new () { HeroType.Owl },
                     new ()
                     {
-                        { HeroType.Hawk , 1}
+                        new Hero(HeroType.Hawk , 1)
                     });
+            
             MissionHistoryData missionHistoryData = new MissionHistoryData(
                 "Переполох в гнезде",
                 "В последние годы в птичьем мире творится что-то странное. Птенцы пропадают из гнезда, перелётные птицы улетают и не возвращается. После исчезновения целого клана грачей Птичий Совет решил всё-таки разобраться с исчезновениями. Совет отправляет Ястреба (стартовый персонаж) в лес расспросить птиц о деталях.",
@@ -36,20 +46,24 @@ namespace Game
                 "EnemySide"
             );
             
-            Mission mission = new Mission(missionData, missionCompletedData, missionHistoryData);
-
-            for (int i = 0; i < missionsCount; i++)
-            {
-                _missionPoints[i].InitMissionPoint(_mapMediator, mission);
-            }
+            Mission mission = new Mission(missionData, missionCompletionData, missionHistoryData);
+            Mission mission2 = new Mission(missionData2, missionCompletionData, missionHistoryData);
+            Mission mission3 = new Mission(missionData3, missionCompletionData, missionHistoryData);
             
-            _settings.missionCount = 1;
+            _settings = new GameSettings();
+            _settings.missionCount = 2;
             _settings.availableHeroes.Add(HeroType.Hawk);
             _settings.missionCollection.Add(mission);
+            _settings.missionCollection.Add(mission2);
+            _settings.missionCollection.Add(mission3);
             _settings.doubleMissionsData.Add(new DoubleMissionData(1,2));
-            SaveSettings();
+            //SaveSettings();
 
-           //LoadSettings();
+            LoadSettings();
+
+            _playerData = new PlayerData(_settings.availableHeroes, _settings.missionCollection, _settings.doubleMissionsData);
+            _mapMediator.Init(_playerData);
+            _mapPresenter.Init(_mapMediator, _playerData);
         }
 
         private void SaveSettings()

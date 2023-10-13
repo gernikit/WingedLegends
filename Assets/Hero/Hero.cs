@@ -1,5 +1,8 @@
+using System;
+
 namespace Heroes
 {
+    [Serializable]
     public enum HeroType
     {
         Hawk,
@@ -8,6 +11,7 @@ namespace Heroes
         Raven
     }
     
+    [Serializable]
     public class Hero
     {
         private HeroType _type;
@@ -17,6 +21,14 @@ namespace Heroes
         {
             _type = type;
             _points = points;
+        }
+        
+        public HeroType Type => _type;
+        public int Points => _points;
+
+        public void AddPoints(int points)
+        {
+            _points += points;
         }
     }
 }

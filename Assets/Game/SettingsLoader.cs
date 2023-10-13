@@ -12,8 +12,6 @@ namespace Game
         
         public GameSettings LoadSettings()
         {
-            GameSettings settings = new GameSettings();
-
             try
             {
                 if (File.Exists(_defaultPath))

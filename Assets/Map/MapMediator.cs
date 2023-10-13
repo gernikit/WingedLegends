@@ -1,3 +1,5 @@
+using Game;
+using Heroes;
 using Missions;
 using UnityEngine;
 
@@ -5,17 +7,30 @@ namespace Map
 {
     public class MapMediator : MonoBehaviour
     {
-        [SerializeField] private PrehistoryView _prehistoryView;
-        [SerializeField] private HistoryView _historyView;
+        [SerializeField] private PrehistoryPresenter _prehistoryPresenter;
+        [SerializeField] private HistoryPresenter _historyPresenter;
+        [SerializeField] private HeroesTab _heroesTab;
 
-        private Mission currentMission;
+        private PlayerData _playerData;
 
-        public void ShowPrehistory(Mission mission) => _prehistoryView.ShowPrehistory(mission);
+        public void Init(PlayerData playerData)
+        {
+            _playerData = playerData;
+        }
 
-        public void HidePrehistory() => _prehistoryView.HidePrehistory();
+        public HeroType SelectedHero => _heroesTab.SelectedHero;
+        
+        public void ShowPrehistory(Mission mission) => _prehistoryPresenter.ShowPrehistory(mission);
 
-        public void ShowHistory(Mission mission) => _historyView.ShowHistory(mission);
+        public void HidePrehistory() => _prehistoryPresenter.HidePrehistory();
 
-        public void HideHistory() => _historyView.HideHistory();
+        public void ShowHistory(Mission mission) => _historyPresenter.ShowHistory(mission, _playerData);
+
+        public void HideHistory() => _historyPresenter.HideHistory();
+
+        public void ShowHeroesTab() => _heroesTab.ShowHeroesTab(_playerData.AvailableHeroes, _playerData.HeroesData);
+
+        public void HideHeroesTab() => _heroesTab.HideHeroesTab();
+        
     }
 }

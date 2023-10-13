@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using System.Xml.Schema;
 using Heroes;
+using Newtonsoft.Json;
 
 namespace Missions {
     public enum MissionState
@@ -21,14 +21,16 @@ namespace Missions {
         private MissionState _state;
         private Vector2 _coordinates;
         private List<uint> _dependenciesIds;
+        private List<uint> _tempBlockedMissionIds;
         
-        public MissionData(uint id, string number, MissionState state, Vector2 coordinates, List<uint> dependenciesIds)
+        public MissionData(uint id, string number, MissionState state, Vector2 coordinates, List<uint> dependenciesIds, List<uint> tempBlockedMissionIds)
         {
             _id = id;
             _number = number;
             _state = state;
             _coordinates = coordinates;
             _dependenciesIds = dependenciesIds;
+            _tempBlockedMissionIds = tempBlockedMissionIds;
         }
         
         public uint ID => _id;
@@ -36,25 +38,28 @@ namespace Missions {
         public MissionState State => _state;
         public Vector2 Coordinates => _coordinates;
         public List<uint> DependenciesIds => _dependenciesIds;
+        public List<uint> TempBlockedMissionIds => _tempBlockedMissionIds;
+
+        public void ChangeState(MissionState state)
+        {
+            _state = state;
+        }
     }
     
     [Serializable]
-    public class MissionCompletedData
+    public class MissionCompletionData
     {
         private List<HeroType> _unlockedHeroes;
-        private List<uint> _tempBlockedMissionIds;
-        private Dictionary<HeroType, int> _heroPoints;
-
-        public MissionCompletedData(List<HeroType> unlockedHeroes, List<uint> tempBlockedMissionIds, Dictionary<HeroType, int> heroPoints)
+        private List<Hero> _heroPoints;
+        
+        public MissionCompletionData(List<HeroType> unlockedHeroes, List<Hero> heroPoints)
         {
             _unlockedHeroes = unlockedHeroes;
-            _tempBlockedMissionIds = tempBlockedMissionIds;
             _heroPoints = heroPoints;
         }
         
         public List<HeroType> UnlockedHeroes => _unlockedHeroes;
-        public List<uint> TempBlockedMissionIds => _tempBlockedMissionIds;
-        public Dictionary<HeroType, int> HeroPoints => _heroPoints;
+        public List<Hero> HeroPoints => _heroPoints;
     }
 
     [Serializable]
@@ -96,25 +101,55 @@ namespace Missions {
 
         public uint FirstMissionId => _firstMissionId;
         public uint SecondMissionId => _secondMissionId;
+
+        public bool TryGetSecondMission(uint id, out uint secondId)
+        {
+            if (id == _firstMissionId)
+            {
+                secondId = _secondMissionId;
+                return true;
+            }
+            else if (id == _secondMissionId)
+            {
+                secondId = _firstMissionId;
+                return true;
+            }
+            else
+            {
+                secondId = id;
+                return false;
+            }
+        }
     }
     
 
     [Serializable]
     public class Mission
     {
+        [JsonProperty("MissionData")]
         private MissionData _missionData;
-        private MissionCompletedData _completedData;
+        [JsonProperty("MissionCompletionData")]
+        private MissionCompletionData _missionCompletionData;
+        [JsonProperty("MissionHistoryData")]
         private MissionHistoryData _missionHistoryData;
-
-        public Mission(MissionData missionData, MissionCompletedData completedData, MissionHistoryData missionHistoryData)
+        
+        public Mission(MissionData missionData, MissionCompletionData completionData, MissionHistoryData missionHistoryData)
         {
             _missionData = missionData;
-            _completedData = completedData;
+            _missionCompletionData = completionData;
             _missionHistoryData = missionHistoryData;
         }
 
+        [JsonIgnore]
         public MissionData MissionData => _missionData;
-        public MissionCompletedData MissionCompletedData => _completedData;
+        [JsonIgnore]
+        public MissionCompletionData MissionCompletionData  => _missionCompletionData;
+        [JsonIgnore]
         public MissionHistoryData MissionHistoryData => _missionHistoryData;
+
+        public void ChangeState(MissionState state)
+        {
+            _missionData.ChangeState(state);
+        }
     }
 }
