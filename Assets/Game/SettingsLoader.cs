@@ -8,7 +8,7 @@ namespace Game
 {
     public class SettingsLoader
     {
-        private string _defaultPath = @"Assets\Game\settings.json";
+        private readonly string _defaultPath = @"Assets\Game\settings.json";
         
         public GameSettings LoadSettings()
         {

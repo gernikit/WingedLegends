@@ -14,7 +14,6 @@ namespace Map
         [SerializeField] private List<MissionPoint> _missionsPoints;
         
         private MapMediator _mapMediator;
-
         private PlayerData _playerData;
 
         public void Init(MapMediator mapMediator, PlayerData playerData)
@@ -53,7 +52,7 @@ namespace Map
         private void CheckForUnlockHero(List<HeroType> heroesTypes)
         {
             if (heroesTypes.Count > 0)
-                _playerData.AvailableHeroes.AddRange(heroesTypes.Except(_playerData.AvailableHeroes));
+                _playerData.UnlockHeroes(heroesTypes.Except(_playerData.AvailableHeroes).ToList());
         }
 
         private void AddHeroPoints(List<Hero> heroPoints)
@@ -64,8 +63,8 @@ namespace Map
             
             foreach (var heroPoint in allHeroPoints)
             {
-                if (heroPoint.Points < 0 ||
-                    heroPoint.Points > 0 && _playerData.AvailableHeroes.Contains(heroPoint.Type))
+                if (heroPoint.Points < 0 
+                    || (heroPoint.Points > 0 && _playerData.AvailableHeroes.Contains(heroPoint.Type)))
                     _playerData.HeroesData.First(heroData => heroData.Type == heroPoint.Type).AddPoints(heroPoint.Points);
             }
         }

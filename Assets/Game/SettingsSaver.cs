@@ -6,11 +6,12 @@ namespace Game
 {
     public class SettingsSaver
     {
-        private string _defaultPath = @"Assets\Game\settings.json";
+        private readonly string _defaultPath = @"Assets\Game\settings.json";
         
         public void SaveSettings(GameSettings settings)
         {
-            string jsonString = JsonConvert.SerializeObject(settings, Formatting.Indented, new StringEnumConverter());
+            string jsonString = JsonConvert
+                .SerializeObject(settings, Formatting.Indented, new StringEnumConverter());
             
             File.WriteAllText(_defaultPath, jsonString);
         }
