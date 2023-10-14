@@ -56,6 +56,16 @@ namespace Game
             }
         }
 
+        public List<Mission> TempBlockMissions(List<uint> missionsIds)
+        {
+            List <Mission> tempBlockedMission = _missionsCollection
+                .Where(mission => missionsIds.Contains(mission.MissionData.ID))
+                .ToList();
+            tempBlockedMission.ForEach(mission => mission.ChangeState(MissionState.TemporarilyBlocked));
+            
+            return tempBlockedMission;
+        }
+
         public bool CheckActivateConditional(uint idMission)
         {
             MissionConditionalsData conditionals = _missionConditionalsData

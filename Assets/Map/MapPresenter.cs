@@ -38,8 +38,8 @@ namespace Map
             ChangeStateMissionPoint(completedMission, MissionState.Completed);
             CheckForUnlockHero(completedMission.MissionCompletionData.UnlockedHeroes);
             AddHeroPoints(completedMission.MissionCompletionData.HeroPoints);
-            OverrideMissionsStates(completedMission);
-            OverrideDoubleMissionsStates(completedMission);
+            UpdateDoubleMissionsStates(completedMission);
+            UpdateMissionsStates(completedMission);
         }
 
         private void ChangeStateMissionPoint(Mission mission, MissionState missionState)
@@ -69,56 +69,43 @@ namespace Map
             }
         }
 
-        private void OverrideMissionsStates(Mission currentMission)
+        private void UpdateMissionsStates(Mission completedMission)
         {
             foreach (var mission in _playerData.MissionsCollection)
             {
-                if (mission.MissionData.DependenciesIds.Contains(currentMission.MissionData.ID))
-                {
-                    mission.MissionData.DependenciesIds.Remove(currentMission.MissionData.ID);
+                if (mission.MissionData.TempBlockedMissionIds.Contains(completedMission.MissionData.ID))
+                    mission.MissionData.TempBlockedMissionIds.Remove(completedMission.MissionData.ID);
 
-                    if (mission.MissionData.DependenciesIds.Count == 0)
-                    {
-                        if (mission.MissionData.TempBlockedMissionIds.Count > 0)
-                        {
-                            mission.MissionData.ChangeState(MissionState.TemporarilyBlocked);
-                            ChangeStateMissionPoint(mission, MissionState.TemporarilyBlocked);
-                        }
-                        else
-                        {
-                            if (_playerData.CheckActivateConditional(mission.MissionData.ID))
-                            {
-                                mission.MissionData.ChangeState(MissionState.Activated);
-                                ChangeStateMissionPoint(mission, MissionState.Activated);
-                            }
-                        }
-                    }
-                }
-                
-                if (mission.MissionData.TempBlockedMissionIds.Contains(currentMission.MissionData.ID))
+                if (mission.MissionData.DependenciesIds.Contains(completedMission.MissionData.ID))
                 {
-                    mission.MissionData.TempBlockedMissionIds.Remove(currentMission.MissionData.ID);
+                    mission.MissionData.DependenciesIds.Remove(completedMission.MissionData.ID);
                     
-                    if (mission.MissionData.TempBlockedMissionIds.Count == 0 
-                        && mission.MissionData.DependenciesIds.Count == 0
+                    if (mission.MissionData.DependenciesIds.Count == 0
                         &&  _playerData.CheckActivateConditional(mission.MissionData.ID))
                     {
-                        mission.MissionData.ChangeState(MissionState.Activated);
-                        ChangeStateMissionPoint(mission, MissionState.Activated);
+                            var tempBlockedMissions = _playerData.TempBlockMissions(mission.MissionData.TempBlockedMissionIds);
+
+                            foreach (var blockedMission in tempBlockedMissions)
+                            {
+                                ChangeStateMissionPoint(blockedMission, MissionState.TemporarilyBlocked);
+                            }
+                            
+                            mission.MissionData.ChangeState(MissionState.Activated);
+                            ChangeStateMissionPoint(mission, MissionState.Activated);
                     }
                 }
             }
         }
 
-        private void OverrideDoubleMissionsStates(Mission currentMission)
+        private void UpdateDoubleMissionsStates(Mission completedMission)
         {
-            uint secondMissionId = currentMission.MissionData.ID;
+            uint secondMissionId = completedMission.MissionData.ID;
             
-            if (_playerData.TryGetSecondMission(currentMission.MissionData.ID, out secondMissionId))
+            if (_playerData.TryGetSecondMission(completedMission.MissionData.ID, out secondMissionId))
             {
                 Mission secondMission = _playerData.MissionsCollection.First(mission => mission.MissionData.ID == secondMissionId);
                 _playerData.RemoveDependencyBranchMission(secondMission);
-                ChangeStateMissionPoint(secondMission, MissionState.TemporarilyBlocked);
+                ChangeStateMissionPoint(secondMission, MissionState.Blocked);
             }
         }
     }
