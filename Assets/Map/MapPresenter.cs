@@ -3,7 +3,6 @@ using System.Linq;
 using Game;
 using Heroes;
 using Missions;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Map
@@ -40,8 +39,8 @@ namespace Map
             ChangeStateMissionPoint(completedMission, MissionState.Completed);
             CheckForUnlockHero(completedMission.MissionCompletionData.UnlockedHeroes);
             AddHeroPoints(completedMission.MissionCompletionData.HeroPoints);
-            OverrideMissionsStates(completedMission, _playerData.MissionsCollection);
-            OverrideDoubleMissionsStates(completedMission, _playerData.MissionsCollection, _playerData.DoubleMissionsData);
+            OverrideMissionsStates(completedMission);
+            OverrideDoubleMissionsStates(completedMission);
         }
 
         private void ChangeStateMissionPoint(Mission mission, MissionState missionState)
@@ -71,9 +70,9 @@ namespace Map
             }
         }
 
-        private void OverrideMissionsStates(Mission currentMission, List<Mission> missions)
+        private void OverrideMissionsStates(Mission currentMission)
         {
-            foreach (var mission in missions)
+            foreach (var mission in _playerData.MissionsCollection)
             {
                 if (mission.MissionData.DependenciesIds.Contains(currentMission.MissionData.ID))
                 {
@@ -88,8 +87,11 @@ namespace Map
                         }
                         else
                         {
-                            mission.MissionData.ChangeState(MissionState.Activated);
-                            ChangeStateMissionPoint(mission, MissionState.Activated);
+                            if (_playerData.CheckActivateConditional(mission.MissionData.ID))
+                            {
+                                mission.MissionData.ChangeState(MissionState.Activated);
+                                ChangeStateMissionPoint(mission, MissionState.Activated);
+                            }
                         }
                     }
                 }
@@ -99,7 +101,8 @@ namespace Map
                     mission.MissionData.TempBlockedMissionIds.Remove(currentMission.MissionData.ID);
                     
                     if (mission.MissionData.TempBlockedMissionIds.Count == 0 
-                        && mission.MissionData.DependenciesIds.Count == 0 )
+                        && mission.MissionData.DependenciesIds.Count == 0
+                        &&  _playerData.CheckActivateConditional(mission.MissionData.ID))
                     {
                         mission.MissionData.ChangeState(MissionState.Activated);
                         ChangeStateMissionPoint(mission, MissionState.Activated);
@@ -108,14 +111,14 @@ namespace Map
             }
         }
 
-        private void OverrideDoubleMissionsStates(Mission currentMission, List<Mission> missions, List<DoubleMissionData> doubleMissions)
+        private void OverrideDoubleMissionsStates(Mission currentMission)
         {
             uint secondMissionId = currentMission.MissionData.ID;
             
-            if (doubleMissions.Count(doubleMission => 
-                    doubleMission.TryGetSecondMission(currentMission.MissionData.ID, out secondMissionId)) == 1)
+            if (_playerData.TryGetSecondMission(currentMission.MissionData.ID, out secondMissionId))
             {
-                Mission secondMission = missions.First(mission => mission.MissionData.ID == secondMissionId);
+                Mission secondMission = _playerData.MissionsCollection.First(mission => mission.MissionData.ID == secondMissionId);
+                _playerData.RemoveDependencyBranchMission(secondMission);
                 ChangeStateMissionPoint(secondMission, MissionState.TemporarilyBlocked);
             }
         }

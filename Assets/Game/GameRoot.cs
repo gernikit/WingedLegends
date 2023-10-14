@@ -51,17 +51,21 @@ namespace Game
             Mission mission3 = new Mission(missionData3, missionCompletionData, missionHistoryData);
             
             _settings = new GameSettings();
-            _settings.missionCount = 2;
             _settings.availableHeroes.Add(HeroType.Hawk);
             _settings.missionCollection.Add(mission);
             _settings.missionCollection.Add(mission2);
             _settings.missionCollection.Add(mission3);
             _settings.doubleMissionsData.Add(new DoubleMissionData(1,2));
+            _settings.missionConditionalsData.Add(new MissionConditionalsData(9, HeroType.Owl));
+            _settings.missionConditionalsData.Add(new MissionConditionalsData(10, HeroType.Raven));
             //SaveSettings();
 
             LoadSettings();
 
-            _playerData = new PlayerData(_settings.availableHeroes, _settings.missionCollection, _settings.doubleMissionsData);
+            _playerData = new PlayerData(_settings.availableHeroes,
+                _settings.missionCollection,
+                _settings.doubleMissionsData,
+                _settings.missionConditionalsData);
             _mapMediator.Init(_playerData);
             _mapPresenter.Init(_mapMediator, _playerData);
         }

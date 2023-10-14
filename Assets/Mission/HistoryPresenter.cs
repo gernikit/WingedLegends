@@ -14,8 +14,7 @@ namespace Missions
         [SerializeField] private TMP_Text _enemySide;
         [SerializeField] private TMP_Text _missionHistory;
         [SerializeField] private Button _finishMissionButton;
-
-        [SerializeField] private MapMediator _mapMediator;
+        
         [SerializeField] private MapPresenter _mapPresenter;
 
         private Mission _currentMission;

@@ -31,6 +31,5 @@ namespace Map
         public void ShowHeroesTab() => _heroesTab.ShowHeroesTab(_playerData.AvailableHeroes, _playerData.HeroesData);
 
         public void HideHeroesTab() => _heroesTab.HideHeroesTab();
-        
     }
 }

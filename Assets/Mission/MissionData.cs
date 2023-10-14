@@ -121,8 +121,31 @@ namespace Missions {
             }
         }
     }
-    
 
+    [Serializable]
+    public class MissionConditionalsData
+    {
+        private uint _idMission;
+        private HeroType _requiredHero;
+        
+        public MissionConditionalsData(uint idMission, HeroType requiredHero)
+        {
+            _idMission = idMission;
+            _requiredHero = requiredHero;
+        }
+        
+        public uint IDMission => _idMission;
+        public HeroType RequiredHero => _requiredHero;
+
+        public bool CanActivateMission(List<HeroType> availableHeroes)
+        {
+            if (availableHeroes.Contains(_requiredHero))
+                return true;
+            else
+                return false;
+        }
+    }
+    
     [Serializable]
     public class Mission
     {
