@@ -10,6 +10,7 @@ namespace Map
         [SerializeField] private PrehistoryPresenter _prehistoryPresenter;
         [SerializeField] private HistoryPresenter _historyPresenter;
         [SerializeField] private HeroesTab _heroesTab;
+        [SerializeField] private GameObject _adviceChooseHero;
 
         private PlayerData _playerData;
 
@@ -28,8 +29,15 @@ namespace Map
 
         public void HideHistory() => _historyPresenter.HideHistory();
 
-        public void ShowHeroesTab() => _heroesTab.ShowHeroesTab(_playerData.AvailableHeroes, _playerData.HeroesData);
+        public void ShowHeroesTab() => _heroesTab.ShowHeroesTab();
 
         public void HideHeroesTab() => _heroesTab.HideHeroesTab();
+
+        public void UpdateHeroesTab() =>
+            _heroesTab.UpdateHeroesTab(_playerData.AvailableHeroes, _playerData.HeroesData);
+
+        public void ShowAdviceChooseHero() => _adviceChooseHero.SetActive(true);
+        
+        public void HideAdviceChooseHero() => _adviceChooseHero.SetActive(false);
     }
 }

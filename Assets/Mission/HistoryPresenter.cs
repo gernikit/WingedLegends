@@ -16,6 +16,7 @@ namespace Missions
         [SerializeField] private Button _finishMissionButton;
         
         [SerializeField] private MapPresenter _mapPresenter;
+        [SerializeField] private MapMediator _mapMediator;
 
         private Mission _currentMission;
         private PlayerData _playerData;
@@ -33,6 +34,7 @@ namespace Missions
         private void OnMissionFinish()
         {
             _mapPresenter.OnMissionCompleted(_currentMission);
+            _mapMediator.UpdateHeroesTab();
             HideHistory();
         }
 

@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
+using Map;
 using UnityEngine;
 
 namespace Heroes
 {
     public class HeroesTab : MonoBehaviour
     {
+        [SerializeField] private MapMediator _mapMediator;
         [SerializeField] private GameObject _heroesTab;
         [SerializeField] private List<HeroPresenter> _heroes;
 
@@ -13,6 +15,7 @@ namespace Heroes
         {
             IsHeroChosen = true;
             SelectedHero = heroType;
+            _mapMediator.HideAdviceChooseHero();
             
             _heroes.Where(hero => hero.HeroType != heroType)
                 .ToList()
@@ -22,7 +25,7 @@ namespace Heroes
         public bool IsHeroChosen { get; private set; }
         public HeroType SelectedHero { get; private set; }
 
-        public void ShowHeroesTab(List<HeroType> availableHeroes, List<Hero> heroesData)
+        public void UpdateHeroesTab(List<HeroType> availableHeroes, List<Hero> heroesData)
         {
             _heroes.Where(hero => availableHeroes.Contains(hero.HeroType))
                 .ToList()
@@ -32,7 +35,10 @@ namespace Heroes
                     hero.SetHeroInfo(heroData);
                     hero.gameObject.SetActive(true);
                 });
-            
+        }
+
+        public void ShowHeroesTab()
+        {
             _heroesTab.SetActive(true);
         }
         

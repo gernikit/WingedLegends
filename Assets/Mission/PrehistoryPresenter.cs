@@ -9,7 +9,6 @@ namespace Missions
     public class PrehistoryPresenter : MonoBehaviour
     {
         [SerializeField] private GameObject _prehistoryWindow;
-        [SerializeField] private GameObject _chooseHeroPanel;
         [SerializeField] private TMP_Text _missionNameLeft;
         [SerializeField] private TMP_Text _missionNameRight;
         [SerializeField] private TMP_Text _missionPrehistoryLeft;
@@ -39,13 +38,11 @@ namespace Missions
             if (_heroesTab.IsHeroChosen)
             {
                 HidePrehistory();
-                _chooseHeroPanel.SetActive(false);
-                _mapMediator.HideHeroesTab();
                 _mapMediator.ShowHistory(_currentMission);
             }
             else
             {
-                _chooseHeroPanel.SetActive(true);
+                _mapMediator.ShowAdviceChooseHero();
             }
         }
 

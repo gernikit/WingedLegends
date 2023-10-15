@@ -29,7 +29,6 @@ namespace Map
 
         public void OnMissionSelected(Mission mission)
         {
-            _mapMediator.ShowHeroesTab();
             _mapMediator.ShowPrehistory(mission);
         }
 
